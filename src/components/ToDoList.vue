@@ -1,8 +1,21 @@
 <script setup>
     import {ref} from "vue"
+    import {computed} from "vue"
 
     const list = ref([]);
     const input = ref("");
+
+    const filter = ref("")
+
+    const filteredList = computed(() => {
+    let result = [];
+    for (let i = 0; i < list.value.length; i++) {
+        if (list.value[i].toLowerCase().includes(filter.value.toLowerCase())) {
+            result.push(list.value[i]);
+        }
+    }
+    return result;
+});
 
     function add() {
         list.value.push(input.value);
@@ -23,20 +36,22 @@
             To Do List
         </h1> 
 
-        <input v-model="input" @keyup.enter="add()"/>&nbsp &nbsp
-        <button @click="add">
+        <input v-model="input" @keyup.enter="add()" placeholder="Item"/>
+        <!--<button @click="add">
             Add
-        </button>
+        </button>--> <br><br>
+        <input v-model="filter" type="text" placeholder="Filterlist">
         
-    <ul>
-        <li v-for="item in list" :key="item">
-            {{item}} &nbsp &nbsp
-            <button @click="remove"> X </button>
-        </li>
-    </ul>
+        <ul>
+            <li v-for="(item, index) in filteredList" :key="item">
+                {{index}} - {{item}} &nbsp &nbsp
+                    <button @click="remove(index)">X</button>
+            </li>
+
+        </ul>
     </div>
   </template>
-
+  
 
 
 
