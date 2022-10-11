@@ -1,57 +1,49 @@
 <script setup>
-    import {ref} from "vue"
-    import {computed} from "vue"
-
+    import { ref } from "vue";
+    import { computed } from "vue";
     const list = ref([]);
-    const input = ref("");
-
-    const filter = ref("")
-
+    const newItem = ref("");
+    const filter = ref("");
     const filteredList = computed(() => {
-    let result = [];
-    for (let i = 0; i < list.value.length; i++) {
-        if (list.value[i].toLowerCase().includes(filter.value.toLowerCase())) {
-            result.push(list.value[i]);
+        let result = [];
+        for (let i = 0; i < list.value.length; i++) {
+            if (list.value[i].name.toLowerCase().includes(filter.value.toLowerCase())) {
+                result.push(list.value[i]);
+            }
         }
-    }
-    return result;
-});
-
+        return result;
+    });
     function add() {
-        list.value.push(input.value);
-        input.value = "";
+        list.value.push({
+            id: Date.now().toString(16),
+            name: newItem.value,
+        });
+        newItem.value = "";
     }
-
-    function remove(index) {
-        list.value.splice(index, 1);
-    }
-</script>
-
-
-<template>
-
+    function remove(id) {
+        for(let i = 0; i < list.value.length; i++) {
+            if (list.value[i].id === id) {
+                list.value.splice(i, 1);
+            }
+                
+            }
+        }
     
-    <div>
-        <h1>
-            To Do List
-        </h1> 
-
-        <input v-model="input" @keyup.enter="add()" placeholder="Item"/>
-        <!--<button @click="add">
-            Add
-        </button>--> <br><br>
-        <input v-model="filter" type="text" placeholder="Filterlist">
-        
-        <ul>
-            <li v-for="(item, index) in filteredList" :key="item">
-                {{index}} - {{item}} &nbsp &nbsp
-                    <button @click="remove(index)">X</button>
-            </li>
-
-        </ul>
-    </div>
-  </template>
-  
-
-
-
+    </script>
+    
+    <template>
+        <div>
+            <h1>TodoList</h1>
+            <input @keyup.enter="add" v-model="newItem" />
+            <br /><br />
+            <input type="text" placeholder="filter list" v-model="filter" />
+            <ul>
+                <li v-for="item in filteredList" :key="item.id">
+                    {{item.name}}
+                    <button @click="remove(item.id)">x</button>
+                </li>
+            </ul>
+    
+    
+        </div>
+    </template>
